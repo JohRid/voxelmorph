@@ -22,11 +22,12 @@ def default_unet_features():
 
 
 def get_backend():
+    # This funciton is not working as it should, switched around so it returns 'pytorch' as default
     """
     Returns the currently used backend. Default is tensorflow unless the
     VXM_BACKEND environment variable is set to 'pytorch'.
     """
-    return 'pytorch' if os.environ.get('VXM_BACKEND') == 'pytorch' else 'tensorflow'
+    return 'tensorflow' if os.environ.get('VXM_BACKEND') == 'tensorflow' else 'pytorch'
 
 
 def read_file_list(filename, prefix=None, suffix=None):
