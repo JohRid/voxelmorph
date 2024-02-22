@@ -25,8 +25,6 @@ from .py.utils import default_unet_features
 
 # import backend-dependent submodules
 backend = py.utils.get_backend()
-print('Found backend:', backend)
-backend = 'pytorch'
 
 if backend == 'pytorch':
     # the pytorch backend can be enabled by setting the VXM_BACKEND

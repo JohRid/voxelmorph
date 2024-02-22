@@ -4,10 +4,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions.normal import Normal
 
-from .. import default_unet_features
 from . import layers
 from .modelio import LoadableModel, store_config_args
 
+def default_unet_features():
+    nb_features = [
+        [16, 32, 32, 32],             # encoder
+        [32, 32, 32, 32, 32, 16, 16]  # decoder
+    ]
+    return nb_features
 
 class Unet(nn.Module):
     """
@@ -123,18 +128,24 @@ class Unet(nn.Module):
 
         # encoder forward pass
         x_history = [x]
+        #print('P1:', x.shape)
         for level, convs in enumerate(self.encoder):
             for conv in convs:
                 x = conv(x)
+                #print('P2:', x.shape)
             x_history.append(x)
             x = self.pooling[level](x)
+            #print('P3:', x.shape)
 
         # decoder forward pass with upsampling and concatenation
         for level, convs in enumerate(self.decoder):
             for conv in convs:
                 x = conv(x)
+                #print('P4:', x.shape)
             if not self.half_res or level < (self.nb_levels - 2):
                 x = self.upsampling[level](x)
+                #print('P5:', x.shape)
+                #print('Shape of x_history[-1]:', x_history[-1].shape)
                 x = torch.cat([x, x_history.pop()], dim=1)
 
         # remaining convs at full resolution
